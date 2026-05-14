@@ -10,3 +10,4 @@ pandas
 tabulate
 sentence-transformers
 torch
+streamlit>=1.36.0
