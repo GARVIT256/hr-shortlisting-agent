@@ -1,0 +1,12 @@
+langchain>=0.2.0
+langchain-google-genai>=1.0.0
+langchain-core>=0.2.0
+langgraph>=0.1.0
+pydantic>=2.0.0
+python-dotenv
+PyMuPDF
+python-docx
+pandas
+tabulate
+sentence-transformers
+torch

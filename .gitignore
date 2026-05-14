@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+data/resumes/
+data/sample_jd.txt
+.vscode/
+.idea/
+*.log
+venv/
+env/
