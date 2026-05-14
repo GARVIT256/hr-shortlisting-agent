@@ -23,7 +23,7 @@ class AgentState(TypedDict):
 def get_llm():
     """
     Initializes the Google Gemini LLM. 
-    Switched to gemini-1.5-flash for maximum deployment stability across regions.
+    Using gemini-2.0-flash as verified available in this environment.
     """
     import streamlit as st
     
@@ -42,7 +42,7 @@ def get_llm():
         raise ValueError("GOOGLE_API_KEY not found. Please set it in Streamlit Secrets or your .env file.")
         
     return ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash", 
+        model="gemini-2.0-flash", 
         temperature=0, 
         google_api_key=api_key
     )
