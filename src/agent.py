@@ -1,5 +1,6 @@
 import os
 import operator
+import streamlit as st
 from typing import TypedDict, List, Annotated, Union
 from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import MemorySaver
@@ -23,10 +24,8 @@ class AgentState(TypedDict):
 def get_llm():
     """
     Initializes the Google Gemini LLM. 
-    Using gemini-2.0-flash as verified available in this environment.
+    Using gemini-2.0-flash with transport='rest' for maximum compatibility on Cloud.
     """
-    import streamlit as st
-    
     # Try getting from Streamlit secrets first (Cloud), then environment (Local)
     api_key = None
     try:
@@ -44,13 +43,19 @@ def get_llm():
     return ChatGoogleGenerativeAI(
         model="gemini-2.0-flash", 
         temperature=0, 
-        google_api_key=api_key
+        google_api_key=api_key,
+        transport="rest" # Fixes 'redacted' gRPC errors on Streamlit Cloud
     )
 
 def parse_jd_node(state: AgentState):
-    llm = get_llm()
-    parsed_jd = parse_job_description(state["jd_text"], llm)
-    return {"parsed_jd": parsed_jd}
+    try:
+        llm = get_llm()
+        parsed_jd = parse_job_description(state["jd_text"], llm)
+        return {"parsed_jd": parsed_jd}
+    except Exception as e:
+        # Catch and display the actual error in Streamlit to bypass redaction
+        st.error(f"Error in JD Parsing: {str(e)}")
+        raise e
 
 def score_single_candidate(file_path: str, jd: JobDescription):
     """Worker function for parallel candidate scoring."""
