@@ -21,11 +21,31 @@ class AgentState(TypedDict):
     report: str
 
 def get_llm():
-    """Initializes the Gemini 2.0 Flash LLM."""
-    api_key = os.getenv("GOOGLE_API_KEY")
+    """
+    Initializes the Google Gemini LLM. 
+    Switched to gemini-1.5-flash for maximum deployment stability across regions.
+    """
+    import streamlit as st
+    
+    # Try getting from Streamlit secrets first (Cloud), then environment (Local)
+    api_key = None
+    try:
+        if "GOOGLE_API_KEY" in st.secrets:
+            api_key = st.secrets["GOOGLE_API_KEY"]
+    except:
+        pass
+        
     if not api_key:
-        raise ValueError("GOOGLE_API_KEY not found in environment variables.")
-    return ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0)
+        api_key = os.getenv("GOOGLE_API_KEY")
+        
+    if not api_key:
+        raise ValueError("GOOGLE_API_KEY not found. Please set it in Streamlit Secrets or your .env file.")
+        
+    return ChatGoogleGenerativeAI(
+        model="gemini-1.5-flash", 
+        temperature=0, 
+        google_api_key=api_key
+    )
 
 def parse_jd_node(state: AgentState):
     llm = get_llm()
