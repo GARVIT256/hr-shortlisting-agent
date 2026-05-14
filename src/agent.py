@@ -24,7 +24,7 @@ class AgentState(TypedDict):
 def get_llm():
     """
     Initializes the Google Gemini LLM. 
-    Using gemini-2.0-flash with transport='rest' for maximum compatibility on Cloud.
+    Switched to gemini-2.5-flash as gemini-2.0-flash reported 0 quota in this project.
     """
     # Try getting from Streamlit secrets first (Cloud), then environment (Local)
     api_key = None
@@ -41,10 +41,10 @@ def get_llm():
         raise ValueError("GOOGLE_API_KEY not found. Please set it in Streamlit Secrets or your .env file.")
         
     return ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash", 
+        model="gemini-2.5-flash", 
         temperature=0, 
         google_api_key=api_key,
-        transport="rest" # Fixes 'redacted' gRPC errors on Streamlit Cloud
+        transport="rest"
     )
 
 def parse_jd_node(state: AgentState):
